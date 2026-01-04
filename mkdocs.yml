@@ -1,0 +1,47 @@
+site_name: SongList Documentation
+site_description: SongList – Personalized Music Library & Playlist Management 
+site_author: Riddhima Kushwah
+site_url: https://your-username.github.io/songlist-docs/
+repo_url: https://github.com/your-username/songlist
+repo_name: songlist
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - toc.integrate
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+
+plugins:
+  - search
+  - mermaid2
+  - glightbox
+
+markdown_extensions:
+  - tables
+  - admonition
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.tabbed
+  - toc:
+      permalink: true
+
+nav:
+  - Home:
+      - Project Overview: index.md
+  - Functional Documentation: functional-docs.md
+  - Technical Documentation:
+      - Tech Stack: technical/tech-stack.md
+      - Database Schema: technical/schema-design.md
+      - Authentication & Authorization: technical/authentication.md
+      - API Design: technical/api-design.md
