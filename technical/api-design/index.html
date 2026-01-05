@@ -1049,7 +1049,7 @@
 <hr>
 <h2 id="base-configuration">Base Configuration<a class="headerlink" href="#base-configuration" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>Base URL:</strong> <code>/api/v1/</code></li>
+<li><strong>Base URL:</strong> <code>http://localhost:8000/api/v1</code></li>
 <li><strong>Authentication:</strong> JWT (Access &amp; Refresh Tokens)</li>
 <li>
 <p><strong>Core Rule:</strong></p>
@@ -1106,12 +1106,6 @@ Used where object-level ownership enforcement is required.</p>
 <tr>
 <td>Authenticated User</td>
 <td>POST</td>
-<td><code>/api/v1/auth/change-password</code></td>
-<td>Change password for logged-in user.</td>
-</tr>
-<tr>
-<td>Authenticated User</td>
-<td>POST</td>
 <td><code>/api/v1/token/logout</code></td>
 <td>Logout and invalidate refresh token.</td>
 </tr>
@@ -1138,6 +1132,12 @@ Used where object-level ownership enforcement is required.</p>
 </tr>
 <tr>
 <td>Authenticated User</td>
+<td>POST</td>
+<td><code>/api/v1/users/me/change-password</code></td>
+<td>Change password for logged-in user.</td>
+</tr>
+<tr>
+<td>Authenticated User</td>
 <td>PATCH</td>
 <td><code>/api/v1/users/me</code></td>
 <td>Update own profile information.</td>
@@ -1158,7 +1158,7 @@ Used where object-level ownership enforcement is required.</p>
 </ul>
 <hr>
 <h2 id="user-management-endpoints-admin-access">User Management Endpoints (Admin Access)<a class="headerlink" href="#user-management-endpoints-admin-access" title="Permanent link">¶</a></h2>
-<p>These endpoints allow <strong>Admin users</strong> to manage all users in the system.<br>
+<p>These endpoints allow <strong>Admin</strong> to manage all users in the system.<br>
 Access is enforced strictly through <strong>permissions</strong>, not URL structure.</p>
 <hr>
 <h3 id="endpoint">Endpoint<a class="headerlink" href="#endpoint" title="Permanent link">¶</a></h3>
@@ -1209,7 +1209,7 @@ Access is enforced strictly through <strong>permissions</strong>, not URL struct
 <li>These endpoints are <strong>NOT accessible to regular users</strong>.</li>
 <li>Admin access is enforced via:</li>
 <li><code>IsAuthenticated</code></li>
-<li><code>IsAdminUser</code> <strong>or</strong> a custom role-based permission check.</li>
+<li><code>IsAdmin</code> <strong>or</strong> a custom role-based permission check.</li>
 <li>No separate <code>/admin/users</code> endpoint is used.</li>
 <li>This design follows the principle:
   <strong>Same resource → same endpoint, different access → permissions</strong>.</li>
@@ -1217,7 +1217,7 @@ Access is enforced strictly through <strong>permissions</strong>, not URL struct
 </ul>
 <hr>
 <h3 id="permission-enforcement-conceptual">Permission Enforcement (Conceptual)<a class="headerlink" href="#permission-enforcement-conceptual" title="Permanent link">¶</a></h3>
-<p>permission_classes = [IsAuthenticated, IsAdminUser]</p>
+<p>permission_classes = [IsAuthenticated, IsAdmin]</p>
 <h2 id="song-endpoints-shared-resource">Song Endpoints (Shared Resource)<a class="headerlink" href="#song-endpoints-shared-resource" title="Permanent link">¶</a></h2>
 <h3 id="endpoint_1">Endpoint<a class="headerlink" href="#endpoint_1" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code>/api/v1/songs
