@@ -730,20 +730,20 @@ It allows authenticated users to maintain a <strong>personal music library</stro
 <h2 id="problem-statement">Problem Statement<a class="headerlink" href="#problem-statement" title="Permanent link">¶</a></h2>
 <p>Music listeners often curate personal song collections across platforms.<br>
 However, most systems either lack:
-- fine-grained access control, or
-- clean REST-based APIs for secure personalization.</p>
+    - fine-grained access control, or
+    - clean REST-based APIs for secure personalization.</p>
 <p>There is a need for a backend system that:
-- ensures users can manage only their own data,
-- enforces approval-based moderation,
-- follows REST and Django best practices.</p>
+    - ensures users can manage only their own data,
+    - enforces approval-based moderation,
+    - follows REST and Django best practices.</p>
 <hr>
 <h2 id="proposed-solution">Proposed Solution<a class="headerlink" href="#proposed-solution" title="Permanent link">¶</a></h2>
 <p>SongList solves this problem by providing:
-- JWT-based authentication
-- Role-based access control (User &amp; Admin)
-- Moderated song creation and updates
-- Playlist management with approved songs only
-- Clean, REST-pure API endpoints</p>
+    - JWT-based authentication
+    - Role-based access control (User &amp; Admin)
+    - Moderated song creation and updates
+    - Playlist management with approved songs only
+    - Clean, REST-pure API endpoints</p>
 <p>The system avoids duplicated endpoints by using <strong>permissions and queryset filtering</strong> instead of role-specific URLs.</p>
 <hr>
 <h2 id="objectives">Objectives<a class="headerlink" href="#objectives" title="Permanent link">¶</a></h2>
