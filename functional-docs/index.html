@@ -587,7 +587,12 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#user-access-rules" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -597,8 +602,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#song-module" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -607,7 +612,8 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Song Module">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#song-visibility-rules" class="md-nav__link">
@@ -633,6 +639,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
   
 </li>
       
@@ -836,83 +853,105 @@
 
 
 <h1 id="functional-documentation">Functional Documentation<a class="headerlink" href="#functional-documentation" title="Permanent link">¶</a></h1>
-<p>This document explains how the system behaves functionally, focusing on
-user roles, access rules, and module responsibilities, strictly aligned
-with the defined API design.</p>
+<p>This document explains how the <strong>SongList system behaves functionally</strong>, focusing on:</p>
+<ul>
+<li>User roles</li>
+<li>Access rules</li>
+<li>Module responsibilities</li>
+</ul>
+<p>All behavior described here is <strong>strictly aligned with the defined API design</strong> and implementation.</p>
 <hr>
 <h2 id="user-roles">User Roles<a class="headerlink" href="#user-roles" title="Permanent link">¶</a></h2>
 <p>The system supports two roles:</p>
+<hr>
 <h3 id="user">USER<a class="headerlink" href="#user" title="Permanent link">¶</a></h3>
+<p>A regular authenticated user with access limited to their own data.</p>
+<p><strong>Capabilities</strong></p>
 <ul>
 <li>Can register and authenticate</li>
 <li>Can manage <strong>only their own data</strong></li>
-<li><strong>Can:</strong></li>
-<li>view, update, and delete their own profile</li>
-<li>create song requests</li>
-<li>request updates to songs</li>
-<li>create and manage their own playlists</li>
-<li><strong>Cannot:</strong></li>
-<li>access other users’ data</li>
-<li>approve or reject songs</li>
-<li>manage other users</li>
+</ul>
+<p><strong>Can</strong></p>
+<ul>
+<li>View, update, and delete their own profile</li>
+<li>Create song requests</li>
+<li>Request updates to their own songs</li>
+<li>Create and manage their own playlists</li>
+</ul>
+<p><strong>Cannot</strong></p>
+<ul>
+<li>Access other users’ data</li>
+<li>Approve or reject songs</li>
+<li>Manage other users</li>
 </ul>
 <hr>
 <h3 id="admin">ADMIN<a class="headerlink" href="#admin" title="Permanent link">¶</a></h3>
+<p>An elevated user role with moderation and management responsibilities.</p>
+<p><strong>Important Note</strong>
+Admins use the <strong>same API endpoints</strong> as regular users.
+No role-specific URLs are introduced.</p>
+<p><strong>Can</strong></p>
 <ul>
-<li>Uses the <strong>same API endpoints</strong> as users</li>
-<li>Has elevated permissions</li>
-<li><strong>Can:</strong></li>
-<li>view all users</li>
-<li>update any user</li>
-<li>delete any user (except themselves)</li>
-<li>view all songs and playlists</li>
-<li>approve or reject song creation/update requests via review endpoint</li>
-<li>manage playlists (view, delete only) but <strong>cannot create, update, or add/remove songs</strong></li>
-<li>delete any song or playlist</li>
-<li><strong>Note</strong>: Admins generally manage content but do not create song requests themselves.</li>
+<li>View all users</li>
+<li>Update any user</li>
+<li>Delete any user (<strong>except themselves</strong>)</li>
+<li>View all songs and playlists</li>
+<li>Approve or reject song creation/update requests via a review endpoint</li>
+<li>View and delete any playlist</li>
+<li>Delete any song or playlist</li>
+</ul>
+<p><strong>Cannot</strong></p>
+<ul>
+<li>Create song requests themselves</li>
+<li>Update or add/remove songs in playlists</li>
 </ul>
 <blockquote>
-<p>No role-specific URLs are introduced.<br>
-All admin capabilities are enforced through <strong>permissions and queryset filtering</strong>.</p>
+<p>Admin privileges are enforced exclusively through <strong>permissions and queryset filtering</strong>, not separate endpoints.</p>
 </blockquote>
 <hr>
 <h2 id="core-functional-rules">Core Functional Rules<a class="headerlink" href="#core-functional-rules" title="Permanent link">¶</a></h2>
 <h3 id="single-endpoint-rule">Single Endpoint Rule<a class="headerlink" href="#single-endpoint-rule" title="Permanent link">¶</a></h3>
-<ul>
-<li>Each resource has one canonical endpoint</li>
-<li>No separate admin endpoints are created</li>
-</ul>
-<p><strong>Examples:</strong>
-  - <code>/songs/</code> → used by both users and admins
-  - <code>/playlists/</code> → used by both users and admins
-  - <code>/users/</code> → used by both users and admins</p>
+<p>Each resource has <strong>one canonical endpoint</strong>, shared by users and admins.</p>
+<p><strong>Example Endpoints</strong></p>
+<div class="highlight"><pre><span></span><code><span class="err">/api/v1/songs/</span>
+<span class="err">/api/v1/playlists/</span>
+<span class="err">/api/v1/users/</span>
+</code></pre></div>
+<p>No duplicated or role-specific endpoints exist.</p>
 <hr>
 <h3 id="access-control-rule">Access Control Rule<a class="headerlink" href="#access-control-rule" title="Permanent link">¶</a></h3>
-<p><strong>Differences in access are handled using:</strong>
-  - role-based permissions
-  - object-level ownership checks
-  - queryset filtering</p>
+<p>Differences in behavior are handled using:</p>
+<ul>
+<li>Role-based permissions</li>
+<li>Object-level ownership checks</li>
+<li>Queryset filtering</li>
+</ul>
+<p>This keeps the API clean, consistent, and REST-pure.</p>
 <hr>
 <h2 id="system-modules-overview">System Modules Overview<a class="headerlink" href="#system-modules-overview" title="Permanent link">¶</a></h2>
 <h3 id="authentication-module">Authentication Module<a class="headerlink" href="#authentication-module" title="Permanent link">¶</a></h3>
-<p><strong>Purpose</strong><br>
+<p><strong>Purpose</strong>
 Handles user authentication and session management using JWT.</p>
-<p><strong>Key Features</strong>
-  - User registration
-  - Login and logout
-  - Access token refresh
-  - Password change
-  - Strict input validation (email structure, names, phone numbers)</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>User registration</li>
+<li>Login and logout</li>
+<li>Access token refresh</li>
+<li>Password change</li>
+<li>Strict input validation (email format, names, phone numbers)</li>
+</ul>
 <hr>
 <h3 id="user-module">User Module<a class="headerlink" href="#user-module" title="Permanent link">¶</a></h3>
-<p><strong>Purpose</strong><br>
+<p><strong>Purpose</strong>
 Manages user profiles and administrative user operations.</p>
-<p><strong>Key Features</strong>
-  - Self-service user profile management
-  - Admin-level user management
-  - Role-based access enforcement</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Self-service user profile management</li>
+<li>Admin-level user management</li>
+<li>Role-based access enforcement</li>
+</ul>
 <hr>
-<h3 id="user-access-rules">User Access Rules<a class="headerlink" href="#user-access-rules" title="Permanent link">¶</a></h3>
+<h2 id="user-access-rules">User Access Rules<a class="headerlink" href="#user-access-rules" title="Permanent link">¶</a></h2>
 <table>
 <thead>
 <tr>
@@ -931,32 +970,34 @@ Manages user profiles and administrative user operations.</p>
 </tr>
 </tbody>
 </table>
-<p><strong>Design Decisions</strong>
-  - <code>/users/me</code> is used for self-service operations
-  - Admins access user management via the same resource using permissions
-  - No <code>/users/{id}</code> endpoint is exposed to non-admin users</p>
-<p><strong>Example Endpoints</strong>
-  - <code>GET /api/v1/users/me</code>
-  - <code>PUT /api/v1/users/me</code>
-  - <code>DELETE /api/v1/users/me</code></p>
-<p>(Admin-only access via permissions for full user management)</p>
-<hr>
-<h3 id="song-module">Song Module<a class="headerlink" href="#song-module" title="Permanent link">¶</a></h3>
-<p><strong>Purpose</strong><br>
-Manages the personal music library with an approval-based workflow.</p>
-<p><strong>Key Features</strong>
-  - Song creation requests (starts as <code>PENDING</code>)
-  - <strong>Strict Ownership</strong>: Users can only update/delete songs <em>they</em> created
-  - Song lifecycle states:
-    - <code>PENDING</code>
-    - <code>APPROVED</code>
-    - <code>REJECTED</code></p>
+<p><strong>Design Decisions</strong></p>
 <ul>
-<li><strong>Visibility</strong>:<ul>
-<li>Users: All <code>APPROVED</code> songs + their own <code>PENDING</code>/<code>REJECTED</code> songs</li>
-<li>Admins: All songs (any status)</li>
+<li><code>/users/me</code> is used for self-service operations</li>
+<li>Admins access all users through the same resource using permissions</li>
+<li>No <code>/users/{id}</code> endpoint is exposed to non-admin users</li>
 </ul>
+<p><strong>Example Endpoints</strong></p>
+<p></p><div class="highlight"><pre><span></span><code><span class="err">GET /api/v1/users/me/</span>
+<span class="err">PUT /api/v1/users/me/</span>
+<span class="err">DELETE /api/v1/users/me/</span>
+</code></pre></div>
+(Admin-only access for full user management is enforced via permissions.)<p></p>
+<hr>
+<h2 id="song-module">Song Module<a class="headerlink" href="#song-module" title="Permanent link">¶</a></h2>
+<p><strong>Purpose</strong>
+Manages the personal music library with an approval-based lifecycle.</p>
+<p><strong>Key Features</strong></p>
+<ul>
+<li>Song creation requests start in <code>PENDING</code> state</li>
+<li><strong>Strict ownership</strong>: users can update or delete only songs they created</li>
+<li>
+<p>Song lifecycle states:</p>
 </li>
+<li>
+<p><code>PENDING</code></p>
+</li>
+<li><code>APPROVED</code></li>
+<li><code>REJECTED</code></li>
 </ul>
 <hr>
 <h3 id="song-visibility-rules">Song Visibility Rules<a class="headerlink" href="#song-visibility-rules" title="Permanent link">¶</a></h3>
@@ -970,7 +1011,7 @@ Manages the personal music library with an approval-based workflow.</p>
 <tbody>
 <tr>
 <td>User</td>
-<td><strong>Default</strong>: Approved songs. <strong>Filter</strong>: Own pending/rejected songs.</td>
+<td>All <code>APPROVED</code> songs + own <code>PENDING</code> / <code>REJECTED</code> songs</td>
 </tr>
 <tr>
 <td>Admin</td>
@@ -978,18 +1019,47 @@ Manages the personal music library with an approval-based workflow.</p>
 </tr>
 </tbody>
 </table>
-<p><strong>Filtering</strong>: Songs can be filtered by <code>artist</code>, <code>genre</code>, and <code>album</code> query parameters. Users can also filter by <code>status</code> (e.g., <code>status=PENDING</code>) to view their own requests.</p>
-<h3 id="song-review-process">Song Review Process<a class="headerlink" href="#song-review-process" title="Permanent link">¶</a></h3>
-<p>Admins use a dedicated review endpoint to manage song requests.</p>
+<p><strong>Filtering</strong></p>
 <ul>
-<li><strong>Endpoint</strong>: <code>PATCH /api/v1/songs/{id}/review</code></li>
-<li><strong>Rules</strong>:<ul>
-<li>Only songs in <code>PENDING</code> state can be reviewed.</li>
-<li>Admin must provide a status (<code>APPROVED</code> or <code>REJECTED</code>).</li>
-<li>If <code>REJECTED</code>, a justification reason is required.</li>
-</ul>
+<li>
+<p>Songs can be filtered by:</p>
 </li>
+<li>
+<p><code>artist</code></p>
+</li>
+<li><code>genre</code></li>
+<li><code>album</code></li>
+<li>Users may filter by <code>status</code> (e.g., <code>status=PENDING</code>) to view their own requests</li>
 </ul>
+<hr>
+<h3 id="song-review-process">Song Review Process<a class="headerlink" href="#song-review-process" title="Permanent link">¶</a></h3>
+<p>Admins manage song approval using a <strong>dedicated review endpoint</strong>.</p>
+<p><strong>Endpoint</strong></p>
+<div class="highlight"><pre><span></span><code><span class="err">PATCH /api/v1/songs/{id}/review</span>
+</code></pre></div>
+<p><strong>Rules</strong></p>
+<ul>
+<li>Only songs in <code>PENDING</code> state can be reviewed</li>
+<li>
+<p>Admin must provide a status:</p>
+</li>
+<li>
+<p><code>APPROVED</code></p>
+</li>
+<li><code>REJECTED</code></li>
+<li>If <code>REJECTED</code>, a justification reason must be provided</li>
+</ul>
+<hr>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>The functional design ensures:</p>
+<ul>
+<li>Clean separation of responsibilities</li>
+<li>Strong ownership and access guarantees</li>
+<li>Moderated content lifecycle</li>
+<li>A REST-pure, maintainable API surface</li>
+</ul>
+<p>This approach balances <strong>security</strong>, <strong>simplicity</strong>, and <strong>scalability</strong>.</p>
+<hr>
 
 
 

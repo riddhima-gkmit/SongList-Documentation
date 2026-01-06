@@ -85,7 +85,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#songlist-personalized-music-library-playlist-management" class="md-skip">
+        <a href="#songlist" class="md-skip">
           Skip to content
         </a>
       
@@ -444,6 +444,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#personalized-music-library-playlist-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Personalized Music Library &amp; Playlist Management
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#project-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -721,40 +732,57 @@
   
 
 
-<h1 id="songlist-personalized-music-library-playlist-management">SongList – Personalized Music Library &amp; Playlist Management<a class="headerlink" href="#songlist-personalized-music-library-playlist-management" title="Permanent link">¶</a></h1>
+<h1 id="songlist">SongList<a class="headerlink" href="#songlist" title="Permanent link">¶</a></h1>
+<h2 id="personalized-music-library-playlist-management">Personalized Music Library &amp; Playlist Management<a class="headerlink" href="#personalized-music-library-playlist-management" title="Permanent link">¶</a></h2>
+<hr>
 <h2 id="project-overview">Project Overview<a class="headerlink" href="#project-overview" title="Permanent link">¶</a></h2>
-<p>SongList is a REST-based backend application built using <strong>Django</strong> and <strong>Django REST Framework</strong>.<br>
-It allows authenticated users to maintain a <strong>personal music library</strong> and create <strong>custom playlists</strong>, while ensuring that all data is securely isolated per user.</p>
+<p><strong>SongList</strong> is a REST-based backend application built using <strong>Django</strong> and <strong>Django REST Framework (DRF)</strong>.</p>
+<p>It allows authenticated users to maintain a <strong>personal music library</strong> and create <strong>custom playlists</strong>, while ensuring that all data is securely <strong>isolated per user</strong>.</p>
 <p>The system also introduces an <strong>admin approval workflow</strong> to validate song creation and updates before they become publicly usable.</p>
 <hr>
 <h2 id="problem-statement">Problem Statement<a class="headerlink" href="#problem-statement" title="Permanent link">¶</a></h2>
-<p>Music listeners often curate personal song collections across platforms.  </p>
-<p><strong>However, most systems either lack:</strong>
-- fine-grained access control, or
-- clean REST-based APIs for secure personalization.</p>
-<p>There is a need for a backend system that:
-    - ensures users can manage only their own data,
-    - enforces approval-based moderation,
-    - follows REST and Django best practices.</p>
+<p>Music listeners often curate personal song collections across multiple platforms.</p>
+<p>However, most existing systems lack one or more of the following:</p>
+<ul>
+<li>Fine-grained access control</li>
+<li>Clean, REST-based APIs for secure personalization</li>
+<li>Moderation workflows for shared content</li>
+</ul>
+<p>There is a need for a backend system that:</p>
+<ul>
+<li>Ensures users can manage <strong>only their own data</strong></li>
+<li>Enforces <strong>approval-based moderation</strong></li>
+<li>Follows <strong>REST principles</strong> and <strong>Django best practices</strong></li>
+</ul>
 <hr>
 <h2 id="proposed-solution">Proposed Solution<a class="headerlink" href="#proposed-solution" title="Permanent link">¶</a></h2>
-<p>SongList solves this problem by providing:
-    - JWT-based authentication
-    - Role-based access control (User &amp; Admin)
-    - Moderated song creation and updates
-    - Playlist management with approved songs only
-    - Clean, REST-pure API endpoints</p>
-<p>The system avoids duplicated endpoints by using <strong>permissions and queryset filtering</strong> instead of role-specific URLs.</p>
+<p>SongList addresses these challenges by providing:</p>
+<ul>
+<li><strong>JWT-based authentication</strong></li>
+<li><strong>Role-based access control</strong> (<code>USER</code> and <code>ADMIN</code>)</li>
+<li><strong>Moderated song creation and updates</strong></li>
+<li><strong>Playlist management using approved songs only</strong></li>
+<li><strong>Clean, REST-pure API endpoints</strong></li>
+</ul>
+<p>The system avoids duplicated or role-specific endpoints by relying on:</p>
+<ul>
+<li>Permission classes</li>
+<li>Queryset filtering</li>
+<li>Object-level authorization</li>
+</ul>
+<p>This approach keeps the API surface minimal and maintainable.</p>
 <hr>
 <h2 id="objectives">Objectives<a class="headerlink" href="#objectives" title="Permanent link">¶</a></h2>
+<p>The primary objectives of the SongList system are:</p>
 <ul>
-<li>Implement a complete authentication flow</li>
-<li>Enable CRUD operations for songs and playlists</li>
-<li>Allow users to organize songs into playlists</li>
-<li>Enforce admin approval for song changes</li>
-<li>Use enums, constants, and environment variables</li>
-<li>Follow clean Django project structuring</li>
+<li>Implement a complete <strong>authentication and authorization flow</strong></li>
+<li>Enable full <strong>CRUD operations</strong> for songs and playlists</li>
+<li>Allow users to <strong>organize songs into playlists</strong></li>
+<li>Enforce <strong>admin approval</strong> for song creation and updates</li>
+<li>Use <strong>enums, constants, and environment variables</strong> consistently</li>
+<li>Follow <strong>clean Django project structure and conventions</strong></li>
 </ul>
+<hr>
 
 
 
