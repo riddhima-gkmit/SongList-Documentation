@@ -885,7 +885,7 @@
 <h2 id="authentication-flow">Authentication Flow<a class="headerlink" href="#authentication-flow" title="Permanent link">¶</a></h2>
 <h3 id="1-user-registration">1. User Registration<a class="headerlink" href="#1-user-registration" title="Permanent link">¶</a></h3>
 <ul>
-<li>User registers using <strong>username, email, and password</strong>.</li>
+<li>User registers using <strong>username, email, password, and confirm_password</strong>.</li>
 <li>Role is assigned as <strong>USER</strong> by default.</li>
 <li>Passwords are securely hashed using Django’s authentication system.</li>
 </ul>
@@ -965,7 +965,7 @@
 <tr>
 <td>Delete Own Profile</td>
 <td>✅</td>
-<td>✅</td>
+<td>❌ (Safety feature)</td>
 </tr>
 <tr>
 <td>View All Users</td>
@@ -995,22 +995,22 @@
 <tr>
 <td>Create Song Request</td>
 <td>✅</td>
-<td>❌ <em>(Admin can directly add songs)</em></td>
+<td>❌</td>
 </tr>
 <tr>
 <td>View Songs</td>
-<td>✅ <em>(own)</em></td>
+<td>✅ <em>(approved; own pending+rejected)</em></td>
 <td>✅ <em>(all)</em></td>
 </tr>
 <tr>
 <td>View Song Details</td>
-<td>✅ <em>(own)</em></td>
+<td>✅ <em>(approved  + own pending+rejected)</em></td>
 <td>✅ <em>(all)</em></td>
 </tr>
 <tr>
 <td>Request Song Update</td>
 <td>✅ <em>(own)</em></td>
-<td>❌ <em>(Admin updates directly)</em></td>
+<td>❌</td>
 </tr>
 <tr>
 <td>Delete Song</td>
@@ -1045,7 +1045,7 @@
 <tr>
 <td>Delete Playlist</td>
 <td>✅ <em>(own)</em></td>
-<td>❌</td>
+<td>✅ (via IsOwnerOrAdmin)</td>
 </tr>
 <tr>
 <td>Add Song to Playlist</td>
@@ -1063,7 +1063,7 @@
 <h2 id="key-authorization-rules">Key Authorization Rules<a class="headerlink" href="#key-authorization-rules" title="Permanent link">¶</a></h2>
 <h3 id="songs">Songs<a class="headerlink" href="#songs" title="Permanent link">¶</a></h3>
 <ul>
-<li>Users can access <strong>only their own songs</strong>.</li>
+<li>Users can access <strong>all approved songs</strong> and <strong>their own pending/rejected songs</strong>.</li>
 <li>Admins can access <strong>all songs</strong>.</li>
 <li>All song creation and update requests require <strong>admin approval</strong>.</li>
 <li>Rejected updates do <strong>not overwrite</strong> approved data.</li>
@@ -1072,13 +1072,14 @@
 <ul>
 <li>Playlists are <strong>owned by users</strong>.</li>
 <li>Users can modify <strong>only their own playlists</strong>.</li>
-<li>Admins can view <strong>any playlist</strong>.</li>
-<li>Only <strong>approved songs owned by the same user</strong> can be added to a playlist.</li>
+<li>Admins can view and delete <strong>any playlist</strong>, but <strong>cannot create, update, or add/remove songs</strong>.</li>
+<li>Users can only add their own approved songs to playlists.</li>
 </ul>
 <h3 id="users">Users<a class="headerlink" href="#users" title="Permanent link">¶</a></h3>
 <ul>
 <li>Users can manage <strong>only their own profiles</strong>.</li>
 <li>Admins can manage <strong>all users</strong>.</li>
+<li>Admins cannot delete their own accounts (safety feature).</li>
 <li>No role-specific endpoints are exposed.</li>
 </ul>
 <hr>
@@ -1092,7 +1093,7 @@
 </ul>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">IsOwnerOrAdmin</span><span class="p">(</span><span class="n">BasePermission</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_object_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_staff</span> <span class="ow">or</span> <span class="n">obj</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="n">UserRole</span><span class="o">.</span><span class="n">ADMIN</span> <span class="ow">or</span> <span class="n">obj</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
 </code></pre></div>
 <hr>
 <h2 id="authorization-strategy">Authorization Strategy<a class="headerlink" href="#authorization-strategy" title="Permanent link">¶</a></h2>

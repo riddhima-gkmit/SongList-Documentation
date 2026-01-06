@@ -848,6 +848,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#song-review-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Song Review Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#filtering-search" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -997,6 +1008,78 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#pagination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pagination
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-validation-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Global Validation Rules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Global Validation Rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#field-level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Field Level
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#song-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Song Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#playlist-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Playlist Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#response-status-codes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1088,25 +1171,25 @@ Used where object-level ownership enforcement is required.</p>
 <tr>
 <td>All Users</td>
 <td>POST</td>
-<td><code>/api/v1/auth/register</code></td>
+<td><code>/api/v1/auth/register/</code></td>
 <td>Register a new user. Role is <code>USER</code> by default.</td>
 </tr>
 <tr>
 <td>All Users</td>
 <td>POST</td>
-<td><code>/api/v1/auth/login</code></td>
+<td><code>/api/v1/auth/login/</code></td>
 <td>Authenticate and receive JWT tokens.</td>
 </tr>
 <tr>
 <td>All Users</td>
 <td>POST</td>
-<td><code>/api/v1/token/refresh</code></td>
+<td><code>/api/v1/token/refresh/</code></td>
 <td>Refresh JWT access token.</td>
 </tr>
 <tr>
 <td>Authenticated User</td>
 <td>POST</td>
-<td><code>/api/v1/token/logout</code></td>
+<td><code>/api/v1/auth/logout/</code></td>
 <td>Logout and invalidate refresh token.</td>
 </tr>
 </tbody>
@@ -1127,25 +1210,25 @@ Used where object-level ownership enforcement is required.</p>
 <tr>
 <td>Authenticated User</td>
 <td>GET</td>
-<td><code>/api/v1/users/me</code></td>
+<td><code>/api/v1/users/me/</code></td>
 <td>Retrieve current user profile details.</td>
 </tr>
 <tr>
 <td>Authenticated User</td>
 <td>POST</td>
-<td><code>/api/v1/users/me/change-password</code></td>
+<td><code>/api/v1/users/me/change-password/</code></td>
 <td>Change password for logged-in user.</td>
 </tr>
 <tr>
 <td>Authenticated User</td>
 <td>PATCH</td>
-<td><code>/api/v1/users/me</code></td>
+<td><code>/api/v1/users/me/</code></td>
 <td>Update own profile information.</td>
 </tr>
 <tr>
 <td>Authenticated User</td>
 <td>DELETE</td>
-<td><code>/api/v1/users/me</code></td>
+<td><code>/api/v1/users/me/</code></td>
 <td>Delete own user account (soft delete).</td>
 </tr>
 </tbody>
@@ -1180,25 +1263,25 @@ Access is enforced strictly through <strong>permissions</strong>, not URL struct
 <tr>
 <td>Admin</td>
 <td>GET</td>
-<td><code>/api/v1/users</code></td>
+<td><code>/api/v1/users/</code></td>
 <td>Retrieve a list of all users.</td>
 </tr>
 <tr>
 <td>Admin</td>
 <td>GET</td>
-<td><code>/api/v1/users/{id}</code></td>
+<td><code>/api/v1/users/{id}/</code></td>
 <td>Retrieve a specific user by ID.</td>
 </tr>
 <tr>
 <td>Admin</td>
 <td>PATCH</td>
-<td><code>/api/v1/users/{id}</code></td>
+<td><code>/api/v1/users/{id}/</code></td>
 <td>Update details of a specific user.</td>
 </tr>
 <tr>
 <td>Admin</td>
 <td>DELETE</td>
-<td><code>/api/v1/users/{id}</code></td>
+<td><code>/api/v1/users/{id}/</code></td>
 <td>Delete a user (soft delete).</td>
 </tr>
 </tbody>
@@ -1238,38 +1321,70 @@ Access is enforced strictly through <strong>permissions</strong>, not URL struct
 <tr>
 <td>User / Admin</td>
 <td>GET</td>
-<td><code>/api/v1/songs</code></td>
+<td><code>/api/v1/songs/</code></td>
 <td>List songs (user → own, admin → all).</td>
 </tr>
 <tr>
 <td>Owner / Admin</td>
 <td>GET</td>
-<td><code>/api/v1/songs/{id}</code></td>
+<td><code>/api/v1/songs/{id}/</code></td>
 <td>Retrieve specific song.</td>
 </tr>
 <tr>
 <td>User / Admin</td>
 <td>POST</td>
-<td><code>/api/v1/songs</code></td>
+<td><code>/api/v1/songs/</code></td>
 <td>Submit new song request (<code>PENDING</code>).</td>
 </tr>
 <tr>
 <td>Owner / Admin</td>
 <td>PATCH</td>
-<td><code>/api/v1/songs/{id}</code></td>
+<td><code>/api/v1/songs/{id}/</code></td>
 <td>Request song update (admin approval required).</td>
 </tr>
 <tr>
 <td>Owner / Admin</td>
 <td>DELETE</td>
-<td><code>/api/v1/songs/{id}</code></td>
+<td><code>/api/v1/songs/{id}/</code></td>
 <td>Delete a song (soft delete).</td>
 </tr>
 </tbody>
 </table>
 <hr>
+<h3 id="song-review-endpoint">Song Review Endpoint<a class="headerlink" href="#song-review-endpoint" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Admin</td>
+<td>PATCH</td>
+<td><code>/api/v1/songs/{id}/review/</code></td>
+<td>Approve or reject a song request.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request Body:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"APPROVED"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"rejection_reason"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Optional reason"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Validation Rules:</strong></p>
+<ul>
+<li><code>status</code>: Must be one of <code>APPROVED</code>, <code>REJECTED</code>.</li>
+<li><code>rejection_reason</code>: Required if status is <code>REJECTED</code>.</li>
+<li>Only songs with <code>PENDING</code> status can be reviewed.</li>
+</ul>
+<hr>
 <h3 id="filtering-search">Filtering &amp; Search<a class="headerlink" href="#filtering-search" title="Permanent link">¶</a></h3>
-<p>Supported query parameters:</p>
+<p>Supported query parameters for song listing:</p>
 <div class="highlight"><pre><span></span><code>/api/v1/songs/?artist=...
 /api/v1/songs/?genre=...
 /api/v1/songs/?album=...
@@ -1278,7 +1393,7 @@ Access is enforced strictly through <strong>permissions</strong>, not URL struct
 <hr>
 <h3 id="queryset-logic-conceptual">Queryset Logic (Conceptual)<a class="headerlink" href="#queryset-logic-conceptual" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_staff</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_admin</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Song</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">Song</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
 </code></pre></div>
@@ -1332,31 +1447,31 @@ Access is enforced strictly through <strong>permissions</strong>, not URL struct
 <tr>
 <td>User / Admin</td>
 <td>GET</td>
-<td><code>/api/v1/playlists</code></td>
+<td><code>/api/v1/playlists/</code></td>
 <td>List playlists (user → own, admin → all).</td>
 </tr>
 <tr>
 <td>User</td>
 <td>POST</td>
-<td><code>/api/v1/playlists</code></td>
+<td><code>/api/v1/playlists/</code></td>
 <td>Create a new playlist.</td>
 </tr>
 <tr>
 <td>Owner / Admin</td>
 <td>GET</td>
-<td><code>/api/v1/playlists/{id}</code></td>
+<td><code>/api/v1/playlists/{id}/</code></td>
 <td>Retrieve playlist details.</td>
 </tr>
 <tr>
 <td>Owner</td>
 <td>PATCH</td>
-<td><code>/api/v1/playlists/{id}</code></td>
+<td><code>/api/v1/playlists/{id}/</code></td>
 <td>Update playlist information.</td>
 </tr>
 <tr>
-<td>Owner</td>
+<td>Owner / Admin</td>
 <td>DELETE</td>
-<td><code>/api/v1/playlists/{id}</code></td>
+<td><code>/api/v1/playlists/{id}/</code></td>
 <td>Delete playlist (soft delete).</td>
 </tr>
 </tbody>
@@ -1376,28 +1491,29 @@ Access is enforced strictly through <strong>permissions</strong>, not URL struct
 <tr>
 <td>Owner</td>
 <td>POST</td>
-<td><code>/api/v1/playlists/{id}/songs</code></td>
+<td><code>/api/v1/playlists/{id}/songs/</code></td>
 <td>Add an approved song to a playlist.</td>
 </tr>
 <tr>
 <td>Owner</td>
 <td>DELETE</td>
-<td><code>/api/v1/playlists/{id}/songs/{id}</code></td>
+<td><code>/api/v1/playlists/{id}/songs/{id}/</code></td>
 <td>Remove a song from a playlist.</td>
 </tr>
 </tbody>
 </table>
 <h3 id="validation-rules">Validation Rules<a class="headerlink" href="#validation-rules" title="Permanent link">¶</a></h3>
 <ul>
-<li>Only <code>APPROVED</code> songs can be added</li>
-<li>Duplicate songs in the same playlist are prevented</li>
+<li>Only <code>APPROVED</code> songs can be added.</li>
+<li>Users can only add their own approved songs to playlists.</li>
+<li>Duplicate songs in the same playlist are prevented.</li>
 </ul>
 <hr>
 <h2 id="permission-strategy">Permission Strategy<a class="headerlink" href="#permission-strategy" title="Permanent link">¶</a></h2>
 <h3 id="object-level-permission">Object-Level Permission<a class="headerlink" href="#object-level-permission" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">IsOwnerOrAdmin</span><span class="p">(</span><span class="n">BasePermission</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_object_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_staff</span> <span class="ow">or</span> <span class="n">obj</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="n">UserRole</span><span class="o">.</span><span class="n">ADMIN</span> <span class="ow">or</span> <span class="n">obj</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
 </code></pre></div>
 <h3 id="view-level-permission">View-Level Permission<a class="headerlink" href="#view-level-permission" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><span class="n">permission_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">IsAuthenticated</span><span class="p">,</span> <span class="n">IsOwnerOrAdmin</span><span class="p">]</span>
@@ -1407,6 +1523,39 @@ Access is enforced strictly through <strong>permissions</strong>, not URL struct
 <li>Users access only their own resources</li>
 <li>Admins bypass ownership restrictions</li>
 <li>No admin-specific endpoints required</li>
+</ul>
+<hr>
+<h2 id="pagination">Pagination<a class="headerlink" href="#pagination" title="Permanent link">¶</a></h2>
+<p>All list endpoints support pagination via limit/offset pagination.</p>
+<ul>
+<li><code>limit</code>: Number of results to return (default: 10, max: 100).</li>
+<li><code>offset</code>: The initial index from which to return the results.</li>
+<li>Example: <code>?limit=10&amp;offset=0</code></li>
+</ul>
+<h2 id="global-validation-rules">Global Validation Rules<a class="headerlink" href="#global-validation-rules" title="Permanent link">¶</a></h2>
+<h3 id="field-level">Field Level<a class="headerlink" href="#field-level" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Username</strong>: Not empty or whitespace.</li>
+<li><strong>Email</strong>: Must match format <code>^[a-z0-9._%+-]+@[a-z]+\.[a-z]{2,}$</code>. Not empty or whitespace.</li>
+<li><strong>First Name</strong>: Letters and spaces only. Not empty or whitespace.</li>
+<li><strong>Last Name</strong>: Letters and spaces only.</li>
+<li><strong>Phone Number</strong>: Digits, spaces, hyphens, and leading plus only.</li>
+<li><strong>Password</strong>: Must be at least 8 characters. Used for confirmation in registration.</li>
+</ul>
+<h3 id="registration">Registration<a class="headerlink" href="#registration" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Username</strong>: Unique, case-insensitive.</li>
+<li><strong>Email</strong>: Unique, case-insensitive.</li>
+<li><strong>confirm_password</strong>: Must match password.</li>
+</ul>
+<h3 id="song-management">Song Management<a class="headerlink" href="#song-management" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Duration</strong>: Must be a positive integer.</li>
+<li><strong>File Upload</strong>: Allowed formats (e.g., mp3) if applicable.</li>
+</ul>
+<h3 id="playlist-management">Playlist Management<a class="headerlink" href="#playlist-management" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Name</strong>: Required, non-empty.</li>
 </ul>
 <hr>
 <h2 id="response-status-codes">Response Status Codes<a class="headerlink" href="#response-status-codes" title="Permanent link">¶</a></h2>
@@ -1421,7 +1570,7 @@ Access is enforced strictly through <strong>permissions</strong>, not URL struct
 <tbody>
 <tr>
 <td>200 OK</td>
-<td>Successful GET, PUT</td>
+<td>Successful GET, PUT, POST</td>
 </tr>
 <tr>
 <td>201 Created</td>

@@ -826,7 +826,7 @@
 <tbody>
 <tr>
 <td>id</td>
-<td>Integer (PK)</td>
+<td>UUID (PK)</td>
 <td>Unique identifier for the user</td>
 </tr>
 <tr>
@@ -900,7 +900,7 @@
 <tbody>
 <tr>
 <td>id</td>
-<td>Integer (PK)</td>
+<td>UUID (PK)</td>
 <td>Unique genre identifier</td>
 </tr>
 <tr>
@@ -939,17 +939,17 @@
 <tbody>
 <tr>
 <td>id</td>
-<td>Integer (PK)</td>
+<td>UUID (PK)</td>
 <td>Unique song identifier</td>
 </tr>
 <tr>
 <td>user_id</td>
-<td>Integer (FK)</td>
+<td>UUID (FK)</td>
 <td>Owner of the song</td>
 </tr>
 <tr>
 <td>genre_id</td>
-<td>Integer (FK)</td>
+<td>UUID (FK)</td>
 <td>Associated genre</td>
 </tr>
 <tr>
@@ -1024,12 +1024,12 @@
 <tbody>
 <tr>
 <td>id</td>
-<td>Integer (PK)</td>
+<td>UUID (PK)</td>
 <td>Unique playlist identifier</td>
 </tr>
 <tr>
 <td>user_id</td>
-<td>Integer (FK)</td>
+<td>UUID (FK)</td>
 <td>Playlist owner</td>
 </tr>
 <tr>
@@ -1077,17 +1077,17 @@
 <tbody>
 <tr>
 <td>id</td>
-<td>Integer (PK)</td>
+<td>UUID (PK)</td>
 <td>Unique mapping identifier</td>
 </tr>
 <tr>
 <td>playlist_id</td>
-<td>Integer (FK)</td>
+<td>UUID (FK)</td>
 <td>Related playlist</td>
 </tr>
 <tr>
 <td>song_id</td>
-<td>Integer (FK)</td>
+<td>UUID (FK)</td>
 <td>Related song</td>
 </tr>
 <tr>
@@ -1099,11 +1099,6 @@
 <td>updated_at</td>
 <td>Timestamp</td>
 <td>Last update time</td>
-</tr>
-<tr>
-<td>deleted_at</td>
-<td>Timestamp (nullable)</td>
-<td>Soft delete timestamp</td>
 </tr>
 </tbody>
 </table>

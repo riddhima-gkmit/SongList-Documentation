@@ -620,6 +620,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#song-review-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Song Review Process
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -853,11 +864,12 @@ with the defined API design.</p>
 <li>Can:</li>
 <li>view all users</li>
 <li>update any user</li>
-<li>delete any user</li>
+<li>delete any user (except themselves)</li>
 <li>view all songs and playlists</li>
-<li>approve or reject song creation requests</li>
-<li>approve or reject song update requests</li>
+<li>approve or reject song creation/update requests via review endpoint</li>
+<li>manage playlists (view, delete only) but <strong>cannot create, update, or add/remove songs</strong></li>
 <li>delete any song or playlist</li>
+<li><strong>Note</strong>: Admins generally manage content but do not create song requests themselves.</li>
 </ul>
 <blockquote>
 <p>No role-specific URLs are introduced.<br>
@@ -871,9 +883,9 @@ All admin capabilities are enforced through <strong>permissions and queryset fil
 <li>No separate admin endpoints are created</li>
 </ul>
 <p>Examples:
-- <code>/songs</code> → used by both users and admins
-- <code>/playlists</code> → used by both users and admins
-- <code>/users</code> → used by both users and admins</p>
+- <code>/songs/</code> → used by both users and admins
+- <code>/playlists/</code> → used by both users and admins
+- <code>/users/</code> → used by both users and admins</p>
 <hr>
 <h3 id="access-control-rule">Access Control Rule<a class="headerlink" href="#access-control-rule" title="Permanent link">¶</a></h3>
 <ul>
@@ -891,7 +903,8 @@ Handles user authentication and session management using JWT.</p>
 - User registration
 - Login and logout
 - Access token refresh
-- Password change</p>
+- Password change
+- Strict input validation (email structure, names, phone numbers)</p>
 <hr>
 <h3 id="user-module">User Module<a class="headerlink" href="#user-module" title="Permanent link">¶</a></h3>
 <p><strong>Purpose</strong><br>
@@ -934,14 +947,15 @@ Manages user profiles and administrative user operations.</p>
 <p><strong>Purpose</strong><br>
 Manages the personal music library with an approval-based workflow.</p>
 <p><strong>Key Features</strong>
-- Song creation requires admin approval
-- Song updates require admin approval
+- Song creation requests (starts as <code>PENDING</code>)
+- <strong>Strict Ownership</strong>: Users can only update/delete songs <em>they</em> created
 - Song lifecycle states:
   - <code>PENDING</code>
   - <code>APPROVED</code>
   - <code>REJECTED</code>
-- Users can view only their own songs
-- Admins can view all songs</p>
+- <strong>Visibility</strong>:
+  - Users: All <code>APPROVED</code> songs + their own <code>PENDING</code>/<code>REJECTED</code> songs
+  - Admins: All songs (any status)</p>
 <hr>
 <h3 id="song-visibility-rules">Song Visibility Rules<a class="headerlink" href="#song-visibility-rules" title="Permanent link">¶</a></h3>
 <table>
@@ -954,15 +968,26 @@ Manages the personal music library with an approval-based workflow.</p>
 <tbody>
 <tr>
 <td>User</td>
-<td>Own songs only</td>
+<td><strong>Default</strong>: Approved songs. <strong>Filter</strong>: Own pending/rejected songs.</td>
 </tr>
 <tr>
 <td>Admin</td>
-<td>All songs</td>
+<td>All songs (any status)</td>
 </tr>
 </tbody>
 </table>
-<p>Filtering is supported using query parameters.</p>
+<p><strong>Filtering</strong>: Songs can be filtered by <code>artist</code>, <code>genre</code>, and <code>album</code> query parameters. Users can also filter by <code>status</code> (e.g., <code>status=PENDING</code>) to view their own requests.</p>
+<h3 id="song-review-process">Song Review Process<a class="headerlink" href="#song-review-process" title="Permanent link">¶</a></h3>
+<p>Admins use a dedicated review endpoint to manage song requests.</p>
+<ul>
+<li><strong>Endpoint</strong>: <code>PATCH /api/v1/songs/{id}/review</code></li>
+<li><strong>Rules</strong>:<ul>
+<li>Only songs in <code>PENDING</code> state can be reviewed.</li>
+<li>Admin must provide a status (<code>APPROVED</code> or <code>REJECTED</code>).</li>
+<li>If <code>REJECTED</code>, a justification reason is required.</li>
+</ul>
+</li>
+</ul>
 
 
 
