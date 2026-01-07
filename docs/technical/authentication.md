@@ -8,7 +8,7 @@ SongList uses **RBAC (Role-Based Access Control)** combined with **object-level 
 
 ### 1. User Registration
 
-* User registers using **username, email, and password**.
+* User registers using **username, email, password, and confirm_password**.
 * Role is assigned as **USER** by default.
 * Passwords are securely hashed using Django’s authentication system.
 
@@ -49,25 +49,25 @@ SongList uses **RBAC (Role-Based Access Control)** combined with **object-level 
 | **User Management**       |                 |                                    |
 | View Own Profile          | ✅               | ✅                                  |
 | Update Own Profile        | ✅               | ✅                                  |
-| Delete Own Profile        | ✅               | ✅                                  |
+| Delete Own Profile        | ✅               | ❌ (Safety feature)                |
 | View All Users            | ❌               | ✅                                  |
 | View Any User             | ❌               | ✅                                  |
 | Update Any User           | ❌               | ✅                                  |
 | Delete Any User           | ❌               | ✅                                  |
 | **Song Management**       |                 |                                    |
-| Create Song Request       | ✅               | ❌ *(Admin can directly add songs)* |
-| View Songs                | ✅ *(own)*       | ✅ *(all)*                          |
-| View Song Details         | ✅ *(own)*       | ✅ *(all)*                          |
-| Request Song Update       | ✅ *(own)*       | ❌ *(Admin updates directly)*       |
+| Create Song Request       | ✅               | ❌                                  |
+| View Songs                | ✅ *(approved; own pending+rejected)*       | ✅ *(all)*                          |
+| View Song Details         | ✅ *(approved  + own pending+rejected)*     | ✅ *(all)*                          |
+| Request Song Update       | ✅ *(own)*       | ❌        |
 | Delete Song               | ✅ *(own)*       | ✅                                  |
 | Approve / Reject Songs    | ❌               | ✅                                  |
 | **Playlist Management**   |                 |                                    |
 | Create Playlist           | ✅               | ❌                                  |
 | View Playlists            | ✅ *(own)*       | ✅ *(all)*                          |
 | Update Playlist           | ✅ *(own)*       | ❌                                  |
-| Delete Playlist           | ✅ *(own)*       | ❌                                  |
-| Add Song to Playlist      | ✅ *(own songs)* | ❌                                  |
-| Remove Song from Playlist | ✅ *(own songs)* | ❌                                  |
+| Delete Playlist           | ✅ *(own)*       | ✅ (via IsOwnerOrAdmin)            |
+| Add Song to Playlist      | ✅ *(any approved)* | ❌                                  |
+| Remove Song from Playlist | ✅ *(own playlist)* | ❌                                  |
 
 ---
 
@@ -75,7 +75,7 @@ SongList uses **RBAC (Role-Based Access Control)** combined with **object-level 
 
 ### Songs
 
-* Users can access **only their own songs**.
+* Users can access **all approved songs** and **their own pending/rejected songs**.
 * Admins can access **all songs**.
 * All song creation and update requests require **admin approval**.
 * Rejected updates do **not overwrite** approved data.
@@ -84,13 +84,14 @@ SongList uses **RBAC (Role-Based Access Control)** combined with **object-level 
 
 * Playlists are **owned by users**.
 * Users can modify **only their own playlists**.
-* Admins can view **any playlist**.
-* Only **approved songs owned by the same user** can be added to a playlist.
+* Admins can view and delete **any playlist**, but **cannot create, update, or add/remove songs**.
+* Users can add **any approved song** to their playlists (not restricted to own songs).
 
 ### Users
 
 * Users can manage **only their own profiles**.
 * Admins can manage **all users**.
+* Admins cannot delete their own accounts (safety feature).
 * No role-specific endpoints are exposed.
 
 ---
@@ -108,7 +109,7 @@ SongList uses **RBAC (Role-Based Access Control)** combined with **object-level 
 ```python
 class IsOwnerOrAdmin(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user.is_staff or obj.user == request.user
+        return request.user.role == UserRole.ADMIN or obj.user == request.user
 ```
 
 ---

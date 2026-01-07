@@ -8,7 +8,7 @@ All responses are returned in **JSON format**, and all protected endpoints requi
 
 ## Base Configuration
 
-* **Base URL:** `/api/v1/`
+* **Base URL:** `http://localhost:8000/api/v1`
 * **Authentication:** JWT (Access & Refresh Tokens)
 * **Core Rule:**
 
@@ -41,11 +41,10 @@ Used where object-level ownership enforcement is required.
 
 | Role               | Method | Endpoint                       | Description                                     |
 | ------------------ | ------ | ------------------------------ | ----------------------------------------------- |
-| All Users          | POST   | `/api/v1/auth/register`        | Register a new user. Role is `USER` by default. |
-| All Users          | POST   | `/api/v1/auth/login`           | Authenticate and receive JWT tokens.            |
-| All Users          | POST   | `/api/v1/token/refresh`        | Refresh JWT access token.                       |
-| Authenticated User | POST   | `/api/v1/auth/change-password` | Change password for logged-in user.             |
-| Authenticated User | POST   | `/api/v1/token/logout`         | Logout and invalidate refresh token.            |
+| All Users          | POST   | `/api/v1/auth/register/`        | Register a new user. Role is `USER` by default. |
+| All Users          | POST   | `/api/v1/auth/login/`           | Authenticate and receive JWT tokens.            |
+| All Users          | POST   | `/api/v1/token/refresh/`        | Refresh JWT access token.                       |
+| Authenticated User | POST   | `/api/v1/auth/logout/`          | Logout and invalidate refresh token.            |
 
 ---
 
@@ -55,9 +54,10 @@ Users manage their own profile through a **single self-service endpoint**.
 
 | Role               | Method | Endpoint           | Description                            |
 | ------------------ | ------ | ------------------ | -------------------------------------- |
-| Authenticated User | GET    | `/api/v1/users/me` | Retrieve current user profile details. |
-| Authenticated User | PATCH    | `/api/v1/users/me` | Update own profile information.        |
-| Authenticated User | DELETE | `/api/v1/users/me` | Delete own user account (soft delete). |
+| Authenticated User | GET    | `/api/v1/users/me/` | Retrieve current user profile details. |
+| Authenticated User | POST | `/api/v1/users/me/change-password/` | Change password for logged-in user. |
+| Authenticated User | PATCH    | `/api/v1/users/me/` | Update own profile information.        |
+| User | DELETE | `/api/v1/users/me/` | Delete own user account (soft delete). |
 
 ### Notes
 
@@ -68,7 +68,7 @@ Users manage their own profile through a **single self-service endpoint**.
 
 ## User Management Endpoints (Admin Access)
 
-These endpoints allow **Admin users** to manage all users in the system.  
+These endpoints allow **Admin** to manage all users in the system.  
 Access is enforced strictly through **permissions**, not URL structure.
 
 ---
@@ -86,10 +86,10 @@ This endpoint represents the User resource and is primarily used by admins for u
 
 | Role  | Method | Endpoint               | Description                         |
 |------|--------|------------------------|-------------------------------------|
-| Admin | GET    | `/api/v1/users`        | Retrieve a list of all users.        |
-| Admin | GET    | `/api/v1/users/{id}`   | Retrieve a specific user by ID.      |
-| Admin | PATCH  | `/api/v1/users/{id}`   | Update details of a specific user.   |
-| Admin | DELETE | `/api/v1/users/{id}`   | Delete a user (soft delete).         |
+| Admin | GET    | `/api/v1/users/`        | Retrieve a list of all users.        |
+| Admin | GET    | `/api/v1/users/{id}/`   | Retrieve a specific user by ID.      |
+| Admin | PATCH  | `/api/v1/users/{id}/`   | Update details of a specific user.   |
+| Admin | DELETE | `/api/v1/users/{id}/`   | Delete a user (soft delete).         |
 
 ---
 
@@ -98,7 +98,7 @@ This endpoint represents the User resource and is primarily used by admins for u
 - These endpoints are **NOT accessible to regular users**.
 - Admin access is enforced via:
   - `IsAuthenticated`
-  - `IsAdminUser` **or** a custom role-based permission check.
+  - `IsAdmin` **or** a custom role-based permission check.
 - No separate `/admin/users` endpoint is used.
 - This design follows the principle:
   **Same resource → same endpoint, different access → permissions**.
@@ -108,7 +108,7 @@ This endpoint represents the User resource and is primarily used by admins for u
 
 ### Permission Enforcement (Conceptual)
 
-permission_classes = [IsAuthenticated, IsAdminUser]
+permission_classes = [IsAuthenticated, IsAdmin]
 
 
 ## Song Endpoints (Shared Resource)
@@ -128,17 +128,40 @@ This endpoint is shared by **users and admins**, with access controlled via perm
 
 | Role          | Method | Endpoint             | Description                                    |
 | ------------- | ------ | -------------------- | ---------------------------------------------- |
-| User / Admin  | GET    | `/api/v1/songs`      | List songs (user → own, admin → all).          |
-| Owner / Admin | GET    | `/api/v1/songs/{id}` | Retrieve specific song.                        |
-| User / Admin  | POST   | `/api/v1/songs`      | Submit new song request (`PENDING`).           |
-| Owner / Admin | PATCH    | `/api/v1/songs/{id}` | Request song update (admin approval required). |
-| Owner / Admin | DELETE | `/api/v1/songs/{id}` | Delete a song (soft delete).                   |
+| User / Admin  | GET    | `/api/v1/songs/`      | List songs (user → own, admin → all).          |
+| Owner / Admin | GET    | `/api/v1/songs/{id}/` | Retrieve specific song.                        |
+| User   | POST   | `/api/v1/songs/`      | Submit new song request (`PENDING`).           |
+| Owner  | PATCH    | `/api/v1/songs/{id}/` | Request song update (admin approval required). |
+| Owner / Admin | DELETE | `/api/v1/songs/{id}/` | Delete a song (soft delete).                   |
+
+---
+
+### Song Review Endpoint
+
+| Role  | Method | Endpoint                     | Description                                      |
+| ----- | ------ | ---------------------------- | ------------------------------------------------ |
+| Admin | PATCH  | `/api/v1/songs/{id}/review/` | Approve or reject a song request. |
+
+**Request Body:**
+
+```json
+{
+  "status": "APPROVED",
+  "rejection_reason": "Optional reason"
+}
+```
+
+**Validation Rules:**
+
+*   `status`: Must be one of `APPROVED`, `REJECTED`.
+*   `rejection_reason`: Required if status is `REJECTED`.
+*   Only songs with `PENDING` status can be reviewed.
 
 ---
 
 ### Filtering & Search
 
-Supported query parameters:
+Supported query parameters for song listing:
 
 ```
 /api/v1/songs/?artist=...
@@ -154,7 +177,7 @@ Filters are applied **after** ownership-based queryset restriction.
 
 ```python
 def get_queryset(self):
-    if request.user.is_staff:
+    if request.user.is_admin:
         return Song.objects.all()
     return Song.objects.filter(user=request.user)
 ```
@@ -191,11 +214,11 @@ This ensures:
 
 | Role               | Method | Endpoint                 | Description                               |
 | ------------------ | ------ | ------------------------ | ----------------------------------------- |
-| User / Admin       | GET    | `/api/v1/playlists`      | List playlists (user → own, admin → all). |
-| User | POST   | `/api/v1/playlists`      | Create a new playlist.                    |
-| Owner / Admin      | GET    | `/api/v1/playlists/{id}` | Retrieve playlist details.                |
-| Owner              | PATCH    | `/api/v1/playlists/{id}` | Update playlist information.              |
-| Owner      | DELETE | `/api/v1/playlists/{id}` | Delete playlist (soft delete).            |
+| User / Admin       | GET    | `/api/v1/playlists/`      | List playlists (user → own, admin → all). |
+| User | POST   | `/api/v1/playlists/`      | Create a new playlist.                    |
+| Owner / Admin      | GET    | `/api/v1/playlists/{id}/` | Retrieve playlist details.                |
+| Owner              | PATCH    | `/api/v1/playlists/{id}/` | Update playlist information.              |
+| Owner / Admin      | DELETE | `/api/v1/playlists/{id}/` | Delete playlist (soft delete).            |
 
 
 ---
@@ -204,14 +227,15 @@ This ensures:
 
 | Role                   | Method | Endpoint                                    | Description                         |
 | ---------------------- | ------ | ------------------------------------------- | ----------------------------------- |
-| Owner | POST   | `/api/v1/playlists/{id}/songs`           | Add an approved song to a playlist. |
-| Owner | DELETE | `/api/v1/playlists/{id}/songs/{id}` | Remove a song from a playlist.      |
+| Owner | POST   | `/api/v1/playlists/{id}/songs/`           | Add an approved song to a playlist. |
+| Owner | DELETE | `/api/v1/playlists/{id}/songs/{id}/` | Remove a song from a playlist.      |
 
 
 ### Validation Rules
 
-* Only `APPROVED` songs can be added
-* Duplicate songs in the same playlist are prevented
+*   Only `APPROVED` songs can be added.
+*   Users can add **any** approved song to their playlists (not restricted to own songs).
+*   Duplicate songs in the same playlist are prevented.
 
 ---
 
@@ -222,7 +246,7 @@ This ensures:
 ```python
 class IsOwnerOrAdmin(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user.is_staff or obj.user == request.user
+        return request.user.role == UserRole.ADMIN or obj.user == request.user
 ```
 
 ### View-Level Permission
@@ -239,13 +263,57 @@ permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
 
 ---
 
+## Pagination
+
+All list endpoints support pagination via page number pagination.
+
+*   `page`: Page number (default: 1).
+*   `page_size`: Number of results per page (default: 10, max: 100).
+*   Example: `?page=1&page_size=20`
+
+**Response Format:**
+```json
+{
+  "count": 50,
+  "page": 1,
+  "page_size": 10,
+  "next": 2,
+  "previous": null,
+  "data": [...]
+}
+```
+
+## Global Validation Rules
+
+### Field Level
+*   **Username**: Not empty or whitespace.
+*   **Email**: Must match format `^[a-z0-9._%+-]+@[a-z]+\.[a-z]{2,}$`. Not empty or whitespace.
+*   **First Name**: Letters and spaces only. Not empty or whitespace.
+*   **Last Name**: Letters and spaces only.
+*   **Phone Number**: Digits, spaces, hyphens, and leading plus only.
+*   **Password**: Must be at least 8 characters. Used for confirmation in registration.
+
+### Registration
+*   **Username**: Unique, case-insensitive.
+*   **Email**: Unique, case-insensitive.
+*   **confirm_password**: Must match password.
+
+### Song Management
+*   **Duration**: Must be a positive integer.
+*   **File Upload**: Allowed formats (e.g., mp3) if applicable.
+
+### Playlist Management
+*   **Name**: Required, non-empty.
+
+---
+
 ## Response Status Codes
 
 All endpoints follow REST best practices:
 
 | Status Code               | Meaning                           |
 | ------------------------- | --------------------------------- |
-| 200 OK                    | Successful GET, PUT               |
+| 200 OK                    | Successful GET, PUT, POST         |
 | 201 Created               | Resource successfully created     |
 | 204 No Content            | Successful delete or update       |
 | 400 Bad Request           | Validation or malformed request   |

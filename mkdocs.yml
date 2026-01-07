@@ -1,9 +1,8 @@
 site_name: SongList Documentation
 site_description: SongList – Personalized Music Library & Playlist Management 
 site_author: Riddhima Kushwah
-site_url: https://your-username.github.io/songlist-docs/
-repo_url: https://github.com/your-username/songlist
-repo_name: songlist
+site_url: https://riddhima-gkmit.github.io/SongList-Documentation/technical/api-design/
+repo_url: https://github.com/riddhima-gkmit/SongList-Backend.git
 
 theme:
   name: material

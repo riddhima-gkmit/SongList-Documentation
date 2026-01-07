@@ -26,7 +26,7 @@ Stores authentication credentials, profile information, and role details.
 
 | Field       | Type                 | Description                     |
 | ----------- | -------------------- | ------------------------------- |
-| id          | Integer (PK)         | Unique identifier for the user  |
+| id          | UUID (PK)            | Unique identifier for the user  |
 | role        | Enum                 | Defines role: `ADMIN` or `USER` |
 | username    | String               | Unique username                 |
 | email       | String               | User email address              |
@@ -47,7 +47,7 @@ Represents song categorization to support filtering and organization.
 
 | Field       | Type                 | Description                   |
 | ----------- | -------------------- | ----------------------------- |
-| id          | Integer (PK)         | Unique genre identifier       |
+| id          | UUID (PK)            | Unique genre identifier       |
 | name        | String               | Genre name (e.g., Rock, Jazz) |
 | description | String               | Optional genre description    |
 | created_at  | Timestamp            | Record creation time          |
@@ -61,9 +61,9 @@ Stores song metadata and enforces an approval-based lifecycle.
 
 | Field            | Type                 | Description                       |
 | ---------------- | -------------------- | --------------------------------- |
-| id               | Integer (PK)         | Unique song identifier            |
-| user_id          | Integer (FK)         | Owner of the song                 |
-| genre_id         | Integer (FK)         | Associated genre                  |
+| id               | UUID (PK)            | Unique song identifier            |
+| user_id          | UUID (FK)            | Owner of the song                 |
+| genre_id         | UUID (FK)            | Associated genre                  |
 | status           | Enum                 | `PENDING`, `APPROVED`, `REJECTED` |
 | rejection_reason | String (nullable)    | Reason for rejection (if any)     |
 | title            | String               | Song title                        |
@@ -89,8 +89,8 @@ Represents a user-defined collection of songs.
 
 | Field       | Type                 | Description                    |
 | ----------- | -------------------- | ------------------------------ |
-| id          | Integer (PK)         | Unique playlist identifier     |
-| user_id     | Integer (FK)         | Playlist owner                 |
+| id          | UUID (PK)            | Unique playlist identifier     |
+| user_id     | UUID (FK)            | Playlist owner                 |
 | name        | String               | Playlist name                  |
 | description | String               | Playlist description           |
 | created_at  | Timestamp            | Creation timestamp             |
@@ -109,12 +109,11 @@ Join table enabling a many-to-many relationship between playlists and songs.
 
 | Field       | Type                 | Description               |
 | ----------- | -------------------- | ------------------------- |
-| id          | Integer (PK)         | Unique mapping identifier |
-| playlist_id | Integer (FK)         | Related playlist          |
-| song_id     | Integer (FK)         | Related song              |
+| id          | UUID (PK)            | Unique mapping identifier |
+| playlist_id | UUID (FK)            | Related playlist          |
+| song_id     | UUID (FK)            | Related song              |
 | created_at  | Timestamp            | Time of association       |
 | updated_at  | Timestamp            | Last update time          |
-| deleted_at  | Timestamp (nullable) | Soft delete timestamp     |
 
 **Key Notes**
 
